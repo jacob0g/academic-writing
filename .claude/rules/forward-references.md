@@ -1,33 +1,40 @@
 # Forward Reference Requirements
 
-Applies when editing `thesis/chapters/02_literature.tex`.
+Applies when editing `thesis/sections/02_background.tex`, `03_lit_review.tex` or
+`04_requirements.tex`.
 
 ## Purpose
 
-Chapter 2 (Literature Review) must set up every concept that Chapters 3-5 reference back to. Forward references using `\Cref` create a navigable web connecting the review to the technical chapters.
+The thesis runs theory → literature → requirements → design. Each concept that a later
+section develops or satisfies should point forward to it, so a reader can follow a
+requirement from its origin to the hardware that meets it.
 
 ## Required Forward References
 
-The following concepts MUST be introduced in Ch.2 with a forward `\Cref` to where they are developed:
+| Concept | Introduced in | Points forward to | Target label |
+|---------|---------------|-------------------|--------------|
+| ECM parameters depend on SOC and temperature | `02` ECM (`subsec:ecm`) | Characterisation protocols | `subsubsec:test_general` |
+| PBM parameters (diffusivities, kinetics) | `02` PBM (`subsec:pbm`) | PBM parameterisation in the review; EIS | `subsubsec:eis` |
+| Parameterisation quality drives model error | `03` Cell Models | Requirements | `sec:requirements` |
+| SOC/SOH estimation methods | `03` (`subsec:state_estimation`) | Future BMS integration | `sec:future_work` |
+| Electrical requirements | `04` (`tab:elec_requirements`) | Cell tester design | `subsec:cell_cycler_design` |
+| Thermal requirements | `04` (`tab:therm_requirements`) | TMS design | `subsec:tms_design` |
+| Drive cycle emulation | `04` (`subsubsec:drive_cycle_em`) | Cell tester design | `subsec:cell_cycler_design` |
+| Data platform requirements | `04` Data Platform Requirements | Data platform design | `subsec:data_platform_design` |
 
-| Concept | Introduce in | Forward ref to | Label |
-|---------|-------------|----------------|-------|
-| Task-based framework (ALM) | sec 2.1.1 | Ch.3 (O*NET) | `\Cref{ch:data}` |
-| Shift-share / Bartik design | sec 2.1.2 | Ch.4 (identification) | `\Cref{ch:methodology}` |
-| Task displacement measure | sec 2.1.3 | Ch.4 (construction) | `\Cref{sec:td_measure}` |
-| Labor share methodology | sec 2.1.3 | Ch.4 (eq:raw_td) | `\Cref{subsec:industry_td}` |
-| Rent dissipation concept | sec 2.1.3 | Ch.5 (heterogeneous) | `\Cref{sec:heterogeneous}` |
-| Pseudo-panel approach | sec 2.2.3 | Ch.4 (TWFE) | `\Cref{sec:empirical}` |
-| IRT ideology measurement | sec 2.4 | Ch.3 (IRT data) | `\Cref{sec:data_sources}` |
-| Demographic group definition | sec 2.4 | Ch.3 (groups) | `\Cref{sec:groups}` |
-| Heterogeneous effects | sec 2.3.5 | Ch.5 (subgroups) | `\Cref{sec:heterogeneous}` |
+Known gaps to fix when next editing these sections:
+- `02_background.tex` ends the ECM subsection with "defined in the methodology"; there
+  is no methodology section. Replace with `Section~\ref{subsubsec:test_general}`.
+- "Required Characterisation Protocols", the review's "Physics-Based Models" and "Data
+  Platform Requirements" have no labels; add `subsec:char_protocols`,
+  `subsubsec:pbm_review` and `subsec:data_platform_reqs` when referencing them.
 
 ## Syntax
 
-- Start of sentence: `As I detail in \Cref{ch:methodology}, ...`
-- Mid-sentence: `...which I formalize in \cref{sec:td_measure}`
-- Parenthetical: `(see \Cref{ch:data})`
+- Start of sentence: `As detailed in Section~\ref{subsec:tms_design}, ...`
+- Parenthetical: `(see Section~\ref{subsubsec:eis})`
 
 ## Validation
 
-After writing Ch.2, ALL `\Cref` / `\cref` targets must exist in the compiled document. Compilation with `tectonic` will show `Undefined reference` warnings for broken forward refs.
+Compile with `cd thesis && latexmk -pdf`; any undefined reference warning means a
+broken forward reference.

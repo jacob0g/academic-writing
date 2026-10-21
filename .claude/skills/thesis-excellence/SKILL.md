@@ -9,43 +9,28 @@ Orchestrate a comprehensive multi-agent review of the thesis. The argument speci
 
 ## Scope Options
 
-- `all` — Review the entire thesis (all written chapters)
-- `04_methodology` / `05_results` / etc. — Review a specific chapter
-- `code` — Review all analysis notebooks
+- `all` — Review the entire thesis (all written sections)
+- `04_requirements` / `05_design` / etc. — Review a specific section
+- `code` — Review all analysis modules
 - `pre-submit` — Full pre-submission check (everything)
 
 ## Orchestration Procedure
 
 ### Step 1: Compile
-Run tectonic to verify compilation:
+Run latexmk to verify compilation:
 ```bash
-cd /Users/alessandro/Projects/Tesi/thesis && tectonic main.tex 2>&1
+cd thesis && latexmk -pdf
 ```
 If compilation fails, report the error and stop.
 
-### Step 2: Determine Agents to Dispatch
-
-Based on the scope, select which agents to run:
-
-| Scope | Agents |
-|-------|--------|
-| Any `.tex` chapter | proofreader, latex-auditor, notation-checker |
-| Ch. 4 or Ch. 5 | + causal-inference |
-| Chapters with `\citet`/`\citep` | + literature-rag |
-| `code` scope | code-reviewer |
-| `all` or `pre-submit` | All agents |
-
-### Step 3: Run Agents
+### Step 2: Run Agents
 
 Use the Task tool to fork to each agent in parallel where possible. For each agent:
-- **proofreader**: Read the chapter(s) and produce a proofreading report
+- **proofreader**: Read the section(s) and produce a proofreading report
 - **latex-auditor**: Compile and check cross-references, citations, formatting
 - **notation-checker**: Check all math against the notation registry
-- **causal-inference**: (only for Ch. 4/5) Deep methodology review
-- **literature-rag**: (only for chapters with citations) Verify top claims via RAG
-- **code-reviewer**: (only for code scope) Review notebooks
 
-### Step 4: Synthesize Report
+### Step 3: Synthesize Report
 
 Combine all agent reports into a unified assessment:
 
@@ -60,10 +45,8 @@ COMPILATION: [PASS/FAIL]
 AGENT REPORTS:
 ├── Proofreader:       [summary + issue count]
 ├── LaTeX Auditor:     [summary + issue count]
-├── Notation Checker:  [summary + issue count]
-├── Causal Inference:  [summary + top recommendation]
-├── Literature RAG:    [summary + verification rate]
-└── Code Reviewer:     [summary + issue count]
+└── Notation Checker:  [summary + issue count]
+
 
 QUALITY ASSESSMENT:
 ├── Clarity:       X/10

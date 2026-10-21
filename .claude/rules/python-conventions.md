@@ -1,30 +1,31 @@
----
-globs: analysis/**/*.ipynb, src/**/*.py
----
+# Python Conventions
 
-# Python Conventions for Analysis Code
+Applies to Python under `data-host/` (cycler link, TMS link, cell database) and
+`sims/` (cell models, thermal simulations).
 
 ## Paths
 - Use `pathlib.Path` for all file paths, never string concatenation
-- Define `PROJECT_ROOT` and `RESULTS_DIR` at the top of each notebook
+- Resolve paths relative to the module (`Path(__file__).parent`), not the working directory
 
-## Data Handling
-- Always apply `PERWT` (person weight) when aggregating ACS data
-- Use vectorized pandas/numpy operations — avoid `.append()` in loops
-- For large files, use chunked reading: `pd.read_csv(..., chunksize=500_000)`
-- Call `gc.collect()` after processing large dataframes
+## Dependencies
+- Each project declares dependencies in `pyproject.toml` and pins them with a lock file
+  (`uv.lock`); add new dependencies there, not ad hoc
 
-## Statistical Conventions
-- Sign convention: higher TD = more automation exposure (sign flipped from raw)
-- Subscript ordering in variable names: group, state, year, lag (g, s, t, k)
-- Clusters: group-level for national, state-group for state specifications
+## Tests
+- Tests sit beside the module as `test_*.py` and run with pytest
+- Tests that need hardware on the wire (e.g. `test_wire.py`) must skip cleanly when the
+  device is absent
 
-## Reproducibility
-- Set random seeds where applicable: `np.random.seed(42)`
-- Pin library versions in `requirements.txt`
-- Clear all outputs before committing notebooks (or use `--clear-output`)
+## Numerics
+- Vectorised numpy operations; avoid growing arrays in loops
+- SI units internally; put units in names where ambiguous (`temp_c`, `current_a`, `t_s`)
+- Current sign convention: positive for discharge, matching `eq:ecm_vt` in the thesis
+- Set random seeds where randomness is used (`np.random.default_rng(42)`)
 
-## Formulas
-- Any formula in code must match Chapter 4 exactly
-- Key equations: omega (eq:omega), RCA (eq:rca), group TD (eq:group_td), state TD (eq:state_td)
-- If a discrepancy is found between code and thesis, flag it immediately
+## Consistency with the Thesis and Specs
+- Any model equation or parameter in code (ECM, PBM, thermal model) must match its
+  definition in `thesis/` and the symbols in `notation-registry.md`
+- Protocol and register handling must match `docs/adr/`, the `.scratch/` specs and the
+  TMS Modbus register map (`apx:tms_modbus_map`)
+- If code and thesis disagree, flag it to the user immediately rather than silently
+  changing either

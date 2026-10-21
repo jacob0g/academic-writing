@@ -1,67 +1,68 @@
 # Notation Registry — Canonical Symbol Table
 
-This is the authoritative symbol reference for the thesis. All agents and chapters must use these symbols consistently.
+Authoritative symbol reference for the thesis, taken from the equations as written.
+Use these symbols consistently in every section. Ask the author before adding a symbol
+or changing one.
 
-## Subscript Ordering Convention
+## Conventions
 
-**Always**: group (g), state (s), industry (i), time (t), lag (k)
+- Current $I$ is positive for discharge
+- Phase subscripts are upright: `_{\mathrm{s}}` (solid), `_{\mathrm{e}}` (electrolyte)
+- Descriptive sub/superscripts are upright: `V_{\mathrm{OCV}}`, `D_{\mathrm{e}}^{\mathrm{eff}}`
+- SOC as a function argument: `V_{\mathrm{OCV}}(\mathrm{SOC})`
 
-Examples: $\td_{g,t,k}$, $\td_{g,s,t,k}$, $\omega_{gi}^{(t-k)}$
-
-## Core Symbols
-
-| Symbol | LaTeX | Meaning | Defined in |
-|--------|-------|---------|------------|
-| $L_{i,t}$ | `L_{i,t}` | Labor share of value added, industry i, year t | eq:raw_td |
-| $\text{td}_{i,t,k}$ | `\text{td}_{i,t,k}` | Raw task displacement, industry i, year t, lag k | eq:raw_td |
-| $\widehat{\text{td}}_{i,t,k}$ | `\widehat{\text{td}}_{i,t,k}` | Adjusted (fitted) task displacement | eq:wls_projection |
-| $\text{td}^{\text{GEA}}_{i,t,k}$ | `\text{td}^{\text{GEA}}_{i,t,k}` | GE-adjusted task displacement | eq:gea |
-| $\Delta\text{AP}^{a}_{i,t,k}$ | `\Delta\text{AP}^{a}_{i,t,k}` | Rising share in costs, automation proxy a | eq:automation_proxy |
-| $K^{a}_{i,t}$ | `K^{a}_{i,t}` | Capital services of type a | eq:automation_proxy |
-| $VA_{i,t}$ | `VA_{i,t}` | Value added | eq:automation_proxy |
-| $\omega_{gi}^{(t-k)}$ | `\omega_{gi}^{(t-k)}` | Industry exposure weight, group g, industry i, base year t-k | eq:omega |
-| $\text{RCA}_{gi}^{(t-k)}$ | `\text{RCA}_{gi}^{(t-k)}` | Routine cognitive adjustment factor | eq:rca |
-| $\text{RoutineShare}_{gi}^{(t-k)}$ | `\text{RoutineShare}_{gi}^{(t-k)}` | Fraction of group hours in routine occupations | eq:rca |
-| $\text{RTI}$ | `\text{RTI}` | Routine task intensity index | eq:rti |
-| $r_{\text{cog}}, r_{\text{man}}$ | `r_{\text{cog}}, r_{\text{man}}` | Routine cognitive/manual task content | eq:rti |
-| $nr_{\text{cog,anal}}, nr_{\text{man,phys}}$ | `nr_{\text{cog,anal}}, nr_{\text{man,phys}}` | Non-routine cognitive analytical / manual physical | eq:rti |
-| $\td_{g,t,k}$ | `\td_{g,t,k}` | Group-level task displacement (national) | eq:group_td |
-| $\td_{g,s,t,k}$ | `\td_{g,s,t,k}` | Group-level task displacement (state) | eq:state_td |
-
-## Regression Symbols
+## Equivalent Circuit Model (`02`, `subsec:ecm`)
 
 | Symbol | LaTeX | Meaning | Defined in |
 |--------|-------|---------|------------|
-| $Y_{g,t}$ | `Y_{g,t}` | Political outcome, national | eq:twfe_national |
-| $Y_{g,s,t}$ | `Y_{g,s,t}` | Political outcome, state-level | eq:twfe_state |
-| $\alpha_g$ | `\alpha_g` | Group fixed effect | eq:twfe_national |
-| $\delta_s$ | `\delta_s` | State fixed effect | eq:twfe_state |
-| $\gamma_t$ | `\gamma_t` | Year fixed effect | eq:twfe_national |
-| $\alpha_{gs}$ | `\alpha_{gs}` | Group-by-state fixed effect | eq:twfe_robust |
-| $\beta_k$ | `\beta_k` | Coefficient of interest at lag k | eq:twfe_national |
-| $\bar{Y}^{\text{IVW}}_{g,t}$ | `\bar{Y}^{\text{IVW}}_{g,t}` | Inverse-variance-weighted group mean | eq:ivw |
-| $\est$ | `\est` | IRT ideology estimate (custom command) | subsec:outcomes |
+| $V(t)$ | `V(t)` | Terminal voltage | `eq:ecm_vt` |
+| $V_{\mathrm{OCV}}$ | `V_{\mathrm{OCV}}` | Open-circuit voltage, function of SOC | `eq:ecm_vt` |
+| $I(t)$ | `I(t)` | Applied current (positive discharge) | `eq:ecm_vt` |
+| $R_0$ | `R_0` | Ohmic resistance | `eq:ecm_vt` |
+| $V_1, V_2$ | `V_1`, `V_2` | Voltage across RC pair 1, 2 | `eq:ecm_rc1`, `eq:ecm_rc2` |
+| $R_1, C_1, R_2, C_2$ | `R_1` … | RC pair resistance and capacitance | `eq:ecm_rc1`, `eq:ecm_rc2` |
+| $\tau_1, \tau_2$ | `\tau_1` | RC time constants, $\tau_k = R_k C_k$ | `subsec:ecm` |
 
-## Custom LaTeX Commands
+## Physics-Based Model (`02`, `subsec:pbm`)
 
-| Command | Expansion | Usage |
-|---------|-----------|-------|
-| `\td` | TD | Task displacement in math mode |
-| `\rti` | RTI | Routine task intensity in math mode |
-| `\est` | *est* (italic) | IRT estimate variable |
-| `\note{...}` | Italicized note | Table notes |
+| Symbol | LaTeX | Meaning | Defined in |
+|--------|-------|---------|------------|
+| $x$ | `x` | Through-cell spatial coordinate | `subsec:pbm` |
+| $r$ | `r` | Particle radial coordinate | `subsec:pbm` |
+| $c_{\mathrm{s}}$ | `c_{\mathrm{s}}` | Solid-phase Li concentration | `eq:solid_diffusion` |
+| $c_{\mathrm{s,surf}}$ | `c_{\mathrm{s,surf}}` | Particle surface concentration | `eq:overpotential` |
+| $D_{\mathrm{s}}$ | `D_{\mathrm{s}}` | Solid-phase diffusion coefficient | `eq:solid_diffusion` |
+| $c_{\mathrm{e}}$ | `c_{\mathrm{e}}` | Electrolyte concentration | `eq:electrolyte_diffusion` |
+| $\varepsilon_{\mathrm{e}}$ | `\varepsilon_{\mathrm{e}}` | Electrolyte volume fraction | `eq:electrolyte_diffusion` |
+| $D_{\mathrm{e}}^{\mathrm{eff}}$ | `D_{\mathrm{e}}^{\mathrm{eff}}` | Effective electrolyte diffusivity | `eq:electrolyte_diffusion` |
+| $t_+^0$ | `t_+^0` | Li-ion transference number | `eq:electrolyte_diffusion` |
+| $j$ | `j` | Volumetric reaction current density | `eq:electrolyte_diffusion` |
+| $F$ | `F` | Faraday's constant | `eq:electrolyte_diffusion` |
+| $\phi_{\mathrm{s}}, \phi_{\mathrm{e}}$ | `\phi_{\mathrm{s}}` | Solid / electrolyte potential | `eq:solid_potential`, `eq:electrolyte_potential` |
+| $\sigma^{\mathrm{eff}}$ | `\sigma^{\mathrm{eff}}` | Effective solid conductivity | `eq:solid_potential` |
+| $\kappa^{\mathrm{eff}}$ | `\kappa^{\mathrm{eff}}` | Effective ionic conductivity | `eq:electrolyte_potential` |
+| $\kappa_D^{\mathrm{eff}}$ | `\kappa_D^{\mathrm{eff}}` | Effective diffusional conductivity | `eq:electrolyte_potential` |
+| $a_{\mathrm{s}}$ | `a_{\mathrm{s}}` | Specific surface area | `eq:butler_volmer` |
+| $j_0$ | `j_0` | Exchange current density | `eq:butler_volmer` |
+| $\alpha_{\mathrm{a}}, \alpha_{\mathrm{c}}$ | `\alpha_{\mathrm{a}}` | Anodic / cathodic transfer coefficients | `eq:butler_volmer` |
+| $R$ | `R` | Universal gas constant | `eq:butler_volmer` |
+| $T$ | `T` | Temperature | `eq:butler_volmer` |
+| $\eta$ | `\eta` | Surface overpotential | `eq:overpotential` |
+| $U$ | `U(c_{\mathrm{s,surf}})` | Equilibrium (open-circuit) potential | `eq:overpotential` |
 
-## Parameters
+## Requirements and Design (`04`, `05`)
 
-| Symbol | Value | Meaning |
-|--------|-------|---------|
-| $\pi$ | 0.30 | Share of tasks amenable to automation |
-| $\lambda$ | 0.40 | Elasticity of substitution (routine/non-routine) |
-| $k$ | {1, 2, 3} | Lag window in years |
+| Symbol | LaTeX | Meaning | Defined in |
+|--------|-------|---------|------------|
+| $Q$ | `Q` | Measured capacity (Ah) | `eq:capacity_test` |
+| $\omega_k$ | `\omega_{k}` | EIS excitation frequency | `subsubsec:eis` |
+| $I_k$ | `I_{k}` | EIS current amplitude | `subsubsec:eis` |
+| $Q_c$ | `Q_{c}` | Peltier heat pumping (W) | `05` Power Supply |
 
-## Panel Dimensions
+## Known Conflicts (resolve with the author)
 
-| Panel | Formula | Size |
-|-------|---------|------|
-| National | 18 groups x 9 years x 3 lags | 486 obs |
-| State | 49 states x 18 groups x 9 years x 3 lags | 23,814 obs |
+- $T$ is temperature in `eq:butler_volmer` but discharge duration in `eq:capacity_test`.
+  Suggested: $t_{\mathrm{d}}$ for duration.
+- $Q$ (capacity, Ah) and $Q_c$ (heat, W) share a letter across sections.
+- $R$ (gas constant) vs $R_0, R_1, R_2$ (ECM resistances); acceptable, as subscripts
+  distinguish them, but do not use bare $R$ for a resistance.

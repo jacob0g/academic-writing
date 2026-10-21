@@ -1,31 +1,40 @@
----
-globs: thesis/**/*.tex
----
-
 # LaTeX Conventions
 
-Full conventions are in `thesis/CLAUDE.md`. Key reminders:
+Applies to `.tex` files under `thesis/`. Main file: `thesis/thesis.tex` (`article`
+class, so top-level parts are `\section`s in `thesis/sections/NN_name.tex`).
 
 ## Cross-References
-- Always use `\Cref{label}` (capitalized, start of sentence) or `\cref{label}` (mid-sentence)
-- Label prefixes: `ch:`, `sec:`, `subsec:`, `tab:`, `fig:`, `eq:`, `app:`
-- Never write "Table 5.1" manually — use `\Cref{tab:label}`
+- cleveref is not loaded. Write the type by hand with a tie: `Section~\ref{}`,
+  `Figure~\ref{}`, `Table~\ref{}`, `Equation~\ref{}`, `Appendix~\ref{}`
+- Never hardcode a number ("Table 3"); always `\ref` a label
+- Label prefixes: `sec:`, `subsec:`, `subsubsec:`, `fig:`, `tab:`, `eq:`, `apx:`
+  (`table:p45b_specs` is a legacy exception; use `tab:` for new labels)
 
 ## Citations
-- `\citet{key}` for "Author (Year)" in prose
-- `\citep{key}` for "(Author, Year)" in parenthetical
-- BibTeX key format: `lastnamelower` + `YEARfour` + `shortkeyword`
+- biblatex, IEEE style, biber backend: `\cite{key}`
+- Name authors in prose as `Tekin and Karamangil~\cite{tekin2024}`
+- Never cite a key that is not in `thesis/references.bib`
 
-## Tables
-- `booktabs` only: `\toprule`, `\midrule`, `\bottomrule` — never `\hline`
-- Use `threeparttable` + `tablenotes` for notes
-- Numeric columns: `S` column type from `siunitx`
+## Abbreviations
+- Defined in `thesis/abbreviations.bib` (glossaries-extra + bib2gls)
+- Use `\gls{}`, `\glspl{}`, `\Gls{}` (sentence start); add new entries to the bib file
+  rather than expanding inline
+
+## Tables and Figures
+- `booktabs` only: `\toprule`, `\midrule`, `\bottomrule`; never `\hline`
+- Captions are title case, set above tables and below figures (handled by `caption`)
+- Images live in `thesis/figs/` (on `\graphicspath`); reference by filename only
+
+## Units and Numbers
+- Thin space between value and unit: `4.5\,Ah`, `1\,C`, `$\pm$0.5\,K`
+- C-rates as `1\,C`, `1/25\,C`
 
 ## Style
-- First person singular: "I define", "I construct", "I estimate"
-- Present tense for methodology, past tense for data description
-- Section separators: `% ===` for sections, `% ---` for subsections
+- Third person and passive; "this thesis" for the work. Never "we"
+- Australian/British spelling (characterisation, analogue, modelling)
+- Terminology per `GLOSSARY.md`
 
 ## Build
-- Compile with `tectonic main.tex` from the `thesis/` directory
-- Do NOT use pdflatex, bibtex, or latexmk
+- `cd thesis && latexmk -pdf` (config in `thesis/.latexmkrc`; runs biber and bib2gls,
+  output in `thesis/build/`)
+- Do not call pdflatex, biber or bib2gls directly

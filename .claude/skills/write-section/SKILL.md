@@ -1,267 +1,137 @@
 ---
 name: write-section
-description: Write or revise any thesis chapter section with section-specific templates, style matching, and verification
+description: Write or revise any thesis section (Background, Literature Review, Requirements, Design, Future Work, abstract, appendices) with section-specific templates, style matching, and verification
 ---
 
 # Write Section Skill
 
-Write or revise a section of the thesis. This is a generalizable skill that adapts to any chapter based on section-specific templates and the established conventions from Chapters 3-5.
+Write or revise a section of the honours thesis on the Curtin Motorsport Team (CMT)
+cell testing platform: a four-cell tester (TIDA-010090 analogue front-end + F28P650DK),
+a Peltier-based TMS per cell unit, and a single-board-computer data platform, built to
+characterise the Molicel P45B and parameterise cell models for model-informed BMS state
+estimation.
+
+The thesis uses `article` class, so "chapters" are `\section`s in
+`thesis/sections/NN_name.tex`, input from `thesis/thesis.tex`.
 
 ## Arguments
 
-- `introduction` — Redirects to the `/write-introduction` skill (specialized)
-- `literature [section]` — Write/revise a section of Ch.2 (e.g., `literature 2.1.4`)
-- `abstract` — Write the thesis abstract (~250 words)
-- `conclusion` — Write Ch.6 (Conclusion)
-- `appendix A` or `appendix B` — Write appendix content
-- `revise <chapter>` — Revise an existing chapter (e.g., `revise data`, `revise methodology`)
+- `introduction` — Invoke the `/write-introduction` skill instead (specialised)
+- `abstract` — `thesis/sections/abstract.tex`
+- `background [subsection]` — `02_background.tex` (cell anatomy, ECM, PBM)
+- `literature [subsection]` — `03_lit_review.tex` (cell models, state estimation)
+- `requirements [subsection]` — `04_requirements.tex` (P45B, test protocols, tester and platform requirements)
+- `design [subsection]` — `05_design.tex` and `design/{cell_cycler,thermal_design,data_host}.tex`
+- `future-work` — `06_future_work.tex`
+- `appendix <name>` — `appendices.tex`
+- `revise <section>` — Revise an existing section against this skill
 
-If argument is `introduction`, invoke the `/write-introduction` skill instead.
+New sections (e.g. results, validation, conclusion) get a new `NN_name.tex` file and an
+`\input` in `thesis.tex`; confirm the number and position with the user first.
 
 ---
 
-## Pre-Writing Protocol (ALL sections)
+## Pre-Writing Protocol (all sections)
 
-Before writing any section, you MUST:
+1. Read the target file to judge its state (stub, partial, complete).
+2. Read `GLOSSARY.md` for canonical terms and their _Avoid_ lists.
+3. Read `CLAUDE.md` (root) and, for design or software content, the relevant ADRs in
+   `docs/adr/` and issues in `.scratch/` — they record decisions the thesis must match.
+4. Read ~40 lines from each of two other sections to calibrate voice (see Style below).
+5. Grep `thesis/references.bib` and `thesis/abbreviations.bib` for the keys you need.
+6. For design sections, check the source of truth for numbers: schematics/notes under
+   `cycler/`, `tms/`, `data-host/`, and simulations under `sims/`. Never invent part
+   values, ratings or measured performance.
 
-1. **Read the target file** to understand current state (stub? outline? partial draft? complete?)
-2. **Read `thesis/CLAUDE.md`** for conventions, bib keys, custom commands
-3. **Read `CLAUDE.md` (root)** for project context, measure definitions, findings
-4. **Read `.claude/reference/literature-evidence.md`** for concrete findings from 20+ papers — use for any section that references literature
-5. **Read at least 40 lines** from `03_data.tex`, `04_methodology.tex`, and `05_results.tex` to internalize the writing style
-6. **Read `references.bib`** to know which citations are available
+For literature-heavy writing (Background, Literature Review), dispatch the
+`narrative-architect` agent first for a paragraph-level outline.
 
-### Using the Narrative Architect
-
-For literature-heavy sections (Ch.2 subsections, Ch.1 Antecedents, Ch.6 Interpretation), dispatch the `narrative-architect` agent BEFORE drafting. Provide:
-- **Goal**: What the section needs to establish
-- **Target section**: e.g., "§2.2 — Economic Shocks and Political Behavior"
-- **Constraints**: Length, must-cite papers, emphasis points
-
-The architect returns a paragraph-by-paragraph outline with specific paper citations and transition strategies. Use this as the backbone for your draft.
-
-### Style Requirements (from Chapters 3-5)
+### Style (from the existing sections)
 
 | Dimension | Convention |
 |-----------|-----------|
-| Person | First singular: "I define", "I estimate" |
-| Tense | Present for methodology, past for data/literature |
-| Sentences | 25-35 words average, clause-rich |
-| Paragraphs | Topic sentence → support → transition |
-| Asides | Em-dashes (`---`), not parentheses |
-| Enumeration | Inline (i)/(ii)/(iii), NOT bullet points for arguments |
-| Citations | `\citet{}` for subject, `\citep{}` for parenthetical |
-| Cross-refs | `\Cref{}` start of sentence, `\cref{}` mid-sentence |
-| Numbers | Exact figures inline, never rounded |
-| Emphasis | `\emph{}` on first use, never `\textbf{}` in prose |
-| Hedging | "consistent with", "suggesting", "indicating" |
-| Forbidden | "interestingly", "it is worth noting", "we", rhetorical questions |
+| Person | Third person and passive ("the cell tester uses…", "tests were conducted…"); "this thesis" for the work itself. Never "we"; avoid "I" |
+| Spelling | Australian/British (characterisation, optimisation, analogue, modelling) |
+| Tense | Present for the design and how the platform works; past for what other studies did and for completed work |
+| Citations | biblatex IEEE: `\cite{key}`; name authors in prose as `Tekin and Karamangil~\cite{tekin2024}` |
+| Abbreviations | `\gls{}`, `\glspl{}`, `\Gls{}` from `abbreviations.bib`; add new entries there |
+| Cross-refs | `Section~\ref{}`, `Figure~\ref{}`, `Table~\ref{}`, `Equation~\ref{}`, `Appendix~\ref{}` (no cleveref) |
+| Units | Thin space between number and unit: `2.5\,V`, `1\,C`, `10\,mA`, `$\pm$0.5\,K` |
+| Lists | Colon-introduced inline lists in prose; `itemize` is fine for requirement and task lists |
+| Numbers | Exact values from datasheets, requirements tables or design files |
+| Forbidden | "we", "interestingly", "it is worth noting", unsupported superlatives |
 
 ---
 
-## Section-Specific Templates
+## Section Templates
 
-### Abstract (~250 words)
+### Abstract (~200–250 words, no citations or cross-references)
 
-```
-Structure:
-1. Context (1-2 sentences): The phenomenon and why it matters
-2. Research question (1 sentence): Clear, precise
-3. Method (2-3 sentences): Data, measure, estimation strategy
-4. Findings (2-3 sentences): Main results with magnitudes
-5. Contribution (1-2 sentences): What this adds to the literature
-```
+Problem (CMT's battery constraints) → aim → what was designed/built → methods supported
+(capacity, SOC–OCV, HPPC, EIS, drive cycle) → key finding of the literature review →
+current status → future work. It must agree with the Introduction and Future Work on
+what is designed vs built vs validated.
 
-Rules:
-- No citations in the abstract
-- No forward references
-- Must stand completely alone
-- Use present tense throughout
-- Every sentence must be informative (no filler)
+### Background (`02_background.tex`)
 
-### Literature Review Section (Ch.2)
+Explains the theory later sections rely on: cell anatomy, ECMs (Equations
+`eq:ecm_vt`–`eq:ecm_rc2`), PBMs (`eq:solid_diffusion`–`eq:overpotential`). Each concept
+whose parameters the platform must measure ends with a forward reference to where that
+is addressed (see `.claude/rules/forward-references.md`). Symbols follow
+`.claude/rules/notation-registry.md`. No literature comparison here; that belongs in
+the Literature Review.
 
-```
-Structure per section:
-1. Opening sentence: What this section covers and why
-2. Core papers (3-5 per subsection): Narrative synthesis, NOT paper-by-paper summary
-3. Comparative passages: "While X does A, Y does B, I instead do C"
-4. Forward reference: Bridge to this thesis's approach
-5. Closing transition to next section
-```
+### Literature Review (`03_lit_review.tex`)
 
-Rules:
-- **Synthesize, don't summarize**: Group papers by finding/methodology, not chronologically
-- **Position the thesis**: Every subsection must contain at least one passage comparing prior work to this thesis
-- **Forward references**: Use `\Cref{ch:methodology}`, `\Cref{ch:data}`, etc.
-- **Discursive comparison** (from style-paraphraser): "While \citet{frey2018robot} uses commuting zones, I exploit group-level variation..."
-- **No orphan citations**: Every `\cite` key must exist in `references.bib`
-- **Use the evidence base**: Consult `.claude/reference/literature-evidence.md` for concrete findings and magnitudes. Use Section 7 flow templates as starting points for the narrative-architect agent.
+Per subsection: scope sentence → synthesis grouped by method or finding (not one paper
+per paragraph) → quantitative comparisons with units and test conditions → what this
+means for the platform (which tests, what accuracy). The review's thread is that
+parameterisation quality dictates model error, which justifies the tester's precision
+requirements; close each subsection by tying back to `sec:requirements`.
 
-#### New Section: §2.1.4 — The Global Decline of the Labor Share
+### Requirements (`04_requirements.tex`)
 
-This section needs to be ADDED to Ch.2. Template:
+For each test protocol: purpose → procedure (rates, rest times, cut-offs) → the
+requirement it imposes on the tester (current range, accuracy, sample rate, temperature
+stability) with its source cited. Requirements tables use `booktabs` and are labelled
+`tab:`. Every requirement should be traceable to a test protocol or the P45B datasheet,
+and later be satisfied (or explicitly not) in Design.
 
-```
-Content:
-- Karabarbounis & Neiman (2014): Global labor share decline, investment goods prices
-- Autor et al. (2020): Superstar firms and labor share
-- Barkai (2020): Declining labor share and rising profit share
-- Connection to task displacement: labor share decline as MEASUREMENT strategy
-- Forward ref to \Cref{subsec:industry_td}: "I exploit this relationship..."
-```
+### Design (`05_design.tex`, `design/*.tex`)
 
-This section bridges the labor economics literature to the measurement strategy in Ch.4. It explains WHY declining labor share captures automation exposure.
+Per subsystem: role in the architecture → key design decisions with the alternatives
+rejected and why → how it meets the requirements (cite `tab:elec_requirements` /
+`tab:therm_requirements` rows) → current status. Use GLOSSARY terms exactly (cell
+tester, TMS, data platform, cycler link, channel vs leg). Software/protocol design
+must match the ADRs and `.scratch/` specs; flag any disagreement to the user.
 
-#### Expanded Section: §2.2.3 — Shift-Share Identification
+### Future Work (`06_future_work.tex`)
 
-Expand the existing methodological parallels section:
+Remaining tasks in dependency order, each linked to the requirement or section it
+completes. Must agree with the Design section's stated status.
 
-```
-Additional content:
-- Borusyak, Hull & Jaravel (2022): Shift-share as IV, conditions for valid inference
-- Goldsmith-Pinkham, Sorkin & Swift (2020): Shares-based vs shifts-based identification
-- Connection to THIS thesis's design: predetermined shares from ACS, industry-level shifts from BEA-KLEMS
-- Forward ref to \Cref{sec:empirical}
-```
+### Appendices (`appendices.tex`)
 
-#### Shortened Section: §2.4 — Contribution
-
-After `/write-introduction` migrates the detailed contribution to Ch.1:
-
-```
-New structure (1-2 paragraphs only):
-- Brief enumeration of 4 contributions
-- "As articulated in \Cref{ch:introduction}, this thesis contributes..."
-- No detailed exposition (that's now in Ch.1)
-```
-
-### Conclusion (Ch.6)
-
-```
-Structure:
-1. Summary of findings (2-3 paragraphs)
-   - Restate RQ, method, main result
-   - Key magnitudes (β, lag structure)
-   - Heterogeneous effects
-
-2. Interpretation (2-3 paragraphs)
-   - What the results mean for the backlash vs insecurity debate
-   - Why automation → conservative (mechanism)
-   - Connection to broader populism literature
-
-3. Policy implications (1-2 paragraphs)
-   - Just transitions, retraining programs
-   - Political economy of automation policy
-
-4. Limitations (1-2 paragraphs)
-   - Ecological inference caveat
-   - Pseudo-panel vs true panel
-   - Oster δ = 0.04 (sensitivity to unobservables)
-   - External validity (US only)
-
-5. Future research (1 paragraph)
-   - Individual-level panel data
-   - European comparison
-   - Mechanism decomposition
-   - GenAI era extension
-```
-
-Rules:
-- **No new information**: Everything must reference findings from Ch.5
-- **Honest about limitations**: Don't oversell
-- **Forward-looking**: End on future research, not caveats
-- **Length**: ~4-6 pages, not longer
-
-### Appendix A (Additional Tables)
-
-```
-Content:
-- Full regression tables with all coefficients
-- Alternative specifications mentioned in Ch.5
-- Summary statistics by demographic group
-- Industry-level task displacement values
-```
-
-Rules:
-- Every table must have a `\label{tab:app_...}` and be referenced from the main text
-- Use `threeparttable` with notes
-- Match the formatting of Ch.5 tables exactly
-
-### Appendix B (Additional Figures)
-
-```
-Content:
-- Diagnostic plots (residuals, leverage, etc.)
-- Additional descriptive figures
-- Sensitivity analysis plots
-```
-
-Rules:
-- Every figure must have a `\label{fig:app_...}` and be referenced from main text
-- Include substantive figure notes
-- Check that files exist in `results/figures/` before referencing
+`\section` per appendix, labelled `apx:`, referenced from the main text with
+`Appendix~\ref{}`. Long tables use `longtable`/`csvsimple` with `booktabs` rules.
 
 ---
 
-## Post-Writing Protocol (ALL sections)
+## Post-Writing Protocol (all sections)
 
-### 1. Compile
+1. Compile from `thesis/` (main file `thesis.tex`, output in `build/`):
 
-```bash
-cd /Users/alessandro/Projects/Tesi/thesis && tectonic main.tex
-```
+   ```bash
+   cd thesis && latexmk -pdf
+   ```
 
-### 2. Cross-Reference Check
-
-Verify all `\Cref` and `\cref` targets exist. Tectonic will show `Undefined reference` warnings.
-
-### 3. Citation Check
-
-Verify all `\citet` and `\citep` keys exist in `references.bib`. Tectonic will show `Undefined citation` warnings.
-
-### 4. Consistency Check
-
-- Notation matches the notation registry (`.claude/rules/notation-registry.md`)
-- Sign convention: higher TD = more automation exposure
-- Group definition: 18 groups (Edu x Gender x Age)
-- Panel sizes: national 486, state 23,814
-
-### 5. Style Self-Review
-
-Re-read the draft against the style checklist above. If the prose doesn't match Chapters 3-5, revise or dispatch to the `style-paraphraser` agent.
-
----
+2. Report undefined references, citations and glossary entries; fix errors.
+3. Check terms against `GLOSSARY.md` and symbols against the notation registry.
+4. Check every number against its source; leave `% TODO: verify <what>` where unsure.
+5. Re-read against the style table; if the prose reads generic, use the
+   `style-paraphraser` agent, then `/proofread`.
 
 ## Multi-Pass Workflow
 
-For any non-trivial section (>100 lines), follow this multi-pass approach:
-
-```
-Pass 1: RESEARCH
-  - Read relevant chapters, papers, analysis outputs
-  - Identify all citations needed
-  - List all cross-references needed
-
-Pass 2: OUTLINE
-  - Write paragraph-level outline (1 sentence per paragraph)
-  - Verify logical flow
-  - Check that all required content is covered
-
-Pass 3: DRAFT
-  - Write full prose following section template
-  - Insert all citations and cross-references
-  - Mark uncertain numbers with % TODO
-
-Pass 4: STYLE
-  - Match voice/rhythm to Chapters 3-5
-  - Fix sentence length, transitions, paragraph structure
-  - Remove filler and passive voice
-
-Pass 5: VERIFY
-  - Compile with tectonic
-  - Check all references and citations
-  - Content verification against source material
-```
-
-For short sections (<100 lines), passes 2-3 can be combined.
+For anything over ~100 lines: read → outline (one line per paragraph, with sources) →
+draft → style pass → compile and verify. For shorter edits, outline and draft can merge.

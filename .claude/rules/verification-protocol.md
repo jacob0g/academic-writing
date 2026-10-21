@@ -1,30 +1,29 @@
----
-globs: thesis/**/*.tex
----
-
 # Verification Protocol for LaTeX Edits
 
-After any edit to `.tex` files in the `thesis/` directory, you MUST compile the thesis to verify no errors were introduced.
+After any edit to `.tex` or `.bib` files in `thesis/`, compile the thesis to verify no
+errors were introduced.
 
 ## Compilation Command
 
 ```bash
-cd /Users/alessandro/Projects/Tesi/thesis && tectonic main.tex
+cd thesis && latexmk -pdf
 ```
 
-- **Tool**: `tectonic` (NOT pdflatex/MacTeX — they are not installed)
-- Tectonic handles multiple passes and BibTeX automatically in one command
-- Check the output for errors and warnings
-- Report any `Undefined control sequence`, `Missing reference`, or `Undefined citation` warnings
+- Main file `thesis.tex`; `thesis/.latexmkrc` runs biber and bib2gls and writes to
+  `thesis/build/`
+- Check the output (and `build/thesis.log`) for errors and warnings
+- bib2gls needs a Java runtime on `PATH`; "program not found: java.exe" is an
+  environment problem, not a LaTeX error. Report it rather than editing the source
 
 ## When to Compile
 
 - After creating or editing any `.tex` file
-- After modifying `references.bib`
+- After modifying `references.bib` or `abbreviations.bib`
 - Before declaring a writing task complete
 
 ## Warning Triage
 
-- **Errors** (compilation fails): Must fix before proceeding
-- **Undefined references/citations**: Flag to user, likely needs another pass or missing label
-- **Overfull/underfull hbox**: Informational only, do not fix unless user requests
+- **Errors** (compilation fails): must fix before proceeding
+- **Undefined references, citations or glossary entries**: flag to the user; usually a
+  missing label, bib key or abbreviation entry
+- **Overfull/underfull hbox**: informational only; do not fix unless asked
