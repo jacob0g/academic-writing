@@ -37,7 +37,7 @@ ALWAYS read these files before generating any outline:
 3. `.claude/rules/literature-citations.md` — BibTeX key reference table
 
 If the target section already has a draft, also read:
-4. `thesis/chapters/02_literature.tex` or the relevant chapter file
+4. `thesis/sections/02_literature.tex` or the relevant chapter file
 
 ## How to Build an Argument
 
