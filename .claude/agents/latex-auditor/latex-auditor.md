@@ -18,7 +18,7 @@ You audit the thesis LaTeX source for technical correctness — compilation, cro
 ### 1. Compilation
 Compile the thesis and report any errors or warnings:
 ```bash
-cd /Users/alessandro/Projects/Tesi/thesis && tectonic main.tex 2>&1
+cd thesis && latexmk -pdf
 ```
 
 ### 2. Cross-References
